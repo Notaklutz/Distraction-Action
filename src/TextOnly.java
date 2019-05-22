@@ -34,15 +34,15 @@ public abstract class TextOnly extends JPanel
  /**
   * The light grey colour that is used in the game's text.
   */   
-  protected Color lightGrey = new Color (190, 190, 190); 
+  protected final Color LIGHT_GREY = new Color (190, 190, 190); 
  /**
   * The yellow colour that is used in the game's text.
   */   
-  protected Color yellow = new Color (255, 205, 0);
+  protected final Color YELLOW = new Color (255, 205, 0);
  /**
   * The red colour that is used in the game's text.
   */   
-  protected Color red = new Color (194, 85, 85);   
+  protected final Color RED = new Color (194, 85, 85);   
  /**
   * The JLabel for the big D in the game's logo.
   */   
@@ -71,8 +71,8 @@ public abstract class TextOnly extends JPanel
   {
     try
     {
-      bigTitle = Font.createFont(Font.TRUETYPE_FONT, new File("Apple.ttf")).deriveFont(Font.BOLD, 60f);
-      smallTitle = Font.createFont(Font.TRUETYPE_FONT, new File("Apple.ttf")).deriveFont(Font.BOLD, 30f);
+      bigTitle = Font.createFont(Font.TRUETYPE_FONT, new File("Apple.ttf")).deriveFont(Font.BOLD, 80f);
+      smallTitle = Font.createFont(Font.TRUETYPE_FONT, new File("Apple.ttf")).deriveFont(Font.BOLD, 47f);
       defaultFont = Font.createFont(Font.TRUETYPE_FONT, new File("Apple.ttf")).deriveFont(20f);
     }
     catch (IOException|FontFormatException e) 
@@ -87,19 +87,19 @@ public abstract class TextOnly extends JPanel
   public void printTitle()
   {
     bigD.setFont(bigTitle);
-    bigD.setForeground(yellow);
+    bigD.setForeground(YELLOW);
     bigD.setText("D");
-    layout.putConstraint(SpringLayout.WEST, bigD, 180, SpringLayout.WEST, DistractionAction.frame);
+    layout.putConstraint(SpringLayout.WEST, bigD, 20, SpringLayout.WEST, DistractionAction.frame);
     layout.putConstraint(SpringLayout.NORTH, bigD, 10, SpringLayout.NORTH, DistractionAction.frame);
     this.add(bigD);
     midTitle.setFont(smallTitle);
-    midTitle.setForeground(yellow);
+    midTitle.setForeground(YELLOW);
     midTitle.setText("ISTRACTION ACTIO");
     layout.putConstraint(SpringLayout.WEST, midTitle, -10, SpringLayout.EAST, bigD);
     layout.putConstraint(SpringLayout.NORTH, midTitle, 10, SpringLayout.NORTH, DistractionAction.frame);
     this.add(midTitle);
     bigN.setFont(bigTitle);
-    bigN.setForeground(yellow);
+    bigN.setForeground(YELLOW);
     bigN.setText("N");
     layout.putConstraint(SpringLayout.WEST, bigN, -5, SpringLayout.EAST, midTitle);
     layout.putConstraint(SpringLayout.NORTH, bigN, 10, SpringLayout.NORTH, DistractionAction.frame);
@@ -112,13 +112,13 @@ public abstract class TextOnly extends JPanel
   public void printFooter()
   {
     footer1.setFont(defaultFont);
-    footer1.setForeground(lightGrey);
+    footer1.setForeground(LIGHT_GREY);
     footer1.setText("2019 KODIAK");
     layout.putConstraint(SpringLayout.WEST, footer1, 340, SpringLayout.WEST, DistractionAction.frame);
     layout.putConstraint(SpringLayout.SOUTH, footer1, 750, SpringLayout.NORTH, DistractionAction.frame);
     this.add(footer1);
     footer2.setFont(defaultFont);
-    footer2.setForeground(red);
+    footer2.setForeground(RED);
     footer2.setText("RED");
     layout.putConstraint(SpringLayout.WEST, footer2, 15, SpringLayout.EAST, footer1);
     layout.putConstraint(SpringLayout.SOUTH, footer2, 750, SpringLayout.NORTH, DistractionAction.frame);
