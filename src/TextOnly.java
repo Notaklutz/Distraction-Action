@@ -24,13 +24,17 @@ public abstract class TextOnly extends JPanel {
      */
     protected Font bigTitle;
     /**
-     * The custom font for the buttons in the main meny and the level selection screen.
-     */
-    protected Font buttonFont;
-    /**
      * The custom font for the small letters in the game logo.
      */
     protected Font smallTitle;
+    /**
+     * The custom font for the buttons in the main menu and level selection screens.
+     */
+    protected Font buttonFont;
+    /**
+     * The font for the high scores screen.
+     */   
+    protected Font highScoresFont;
     /**
      * The default font of the game.
      */
@@ -78,11 +82,12 @@ public abstract class TextOnly extends JPanel {
     public void initializeFontsAndLayout() {
         try {
             bigTitle = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/Apple.ttf")).deriveFont(Font.BOLD, 80f);
-            buttonFont = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/Apple.ttf")).deriveFont(Font.BOLD, 40f);
             smallTitle = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/Apple.ttf")).deriveFont(Font.BOLD, 47f);
+            buttonFont = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/Apple.ttf")).deriveFont(Font.BOLD, 40f);
+            highScoresFont = Font.createFont(Font.TRUETYPE_FONT, new File("Apple.ttf")).deriveFont(30f);
             defaultFont = Font.createFont(Font.TRUETYPE_FONT, new File("Fonts/Apple.ttf")).deriveFont(20f);
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
+        } catch (IOException | FontFormatException e) 
+        {
         }
         this.setLayout(layout);
     }
