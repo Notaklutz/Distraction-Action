@@ -1,56 +1,78 @@
-import java.awt.*;
 import javax.swing.*;
-import java.io.*;
-/*
-@author Kevin Nguyen
-@version 1 - May 14, 2019
-<p>
-This class will allow the user to select any one of the rooms to play.
-</p>
-*/
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/**
+ * Lvl Selection Menu of Distraction Action
+ */
 public class LevelSelection extends TextOnly
-{
- /**
-  * This constructor will create a LevelSelection object. It will initialize
-  * the custom fonts and register them to the Graphics environment as well as initialize
-  * the layout of the panel. It will also call the printTitle(), printText(), and printFooter() methods.
-  */ 
-  public LevelSelection()
-  {
+  implements ActionListener {
+  private int btnCount;
+  
+  private JButton lvl1;
+  private JButton lvl2;
+  private JButton lvl3;
+  private JButton menuBtn;
+  
+  /**
+   *
+   */
+  public LevelSelection(DistractionAction d) {
+    game = d;
     initializeFontsAndLayout();
-    ge.registerFont (bigTitle);
-    ge.registerFont (smallTitle);
-    ge.registerFont (defaultFont);
+    ge.registerFont(bigTitle);
+    ge.registerFont(smallTitle);
+    ge.registerFont(buttonFont);
+    ge.registerFont(defaultFont);
     printTitle();
     printText();
     printFooter();
+    this.setBackground(DistractionAction.GREY);
+    this.setVisible(true);
   }
   
- /**
-  * This method will print the options that the user will have to choose from
-  * in the LevelSelection screen.
-  */ 
-  public void printText()
-  {
-   JLabel deficiencies = new JLabel ("LEVEL 1: DEFICIENCIES"); 
-   deficiencies.setFont (defaultFont);
-   deficiencies.setForeground(Color.white);
-   deficiencies.setLocation(400, 300);
-   this.add(deficiencies);
-   JLabel panic = new JLabel ("LEVEL 2: PANIC");
-   panic.setFont(defaultFont);
-   panic.setForeground(Color.white);
-   panic.setLocation(400, 400);
-   this.add(panic);
-   JLabel escape = new JLabel ("LEVEL 3: ESCAPE");
-   escape.setFont (defaultFont);
-   escape.setForeground(Color.white);
-   escape.setLocation(400, 500);
-   this.add(escape);
-   JLabel mainMenu = new JLabel ("MAIN MENU");
-   mainMenu.setFont (defaultFont);
-   mainMenu.setForeground(Color.white);
-   mainMenu.setLocation(400, 600);
-   this.add(mainMenu);
+  public void printText() {
+    lvl1 = buttonCreator("LEVEL 1: DEFICIENCIES");
+    lvl2 = buttonCreator("LEVEL 2: PANIC");
+    lvl3 = buttonCreator("LEVEL 3: ESCAPE");
+    menuBtn = buttonCreator("MAIN MENU");
+    
+    this.add(lvl1);
+    this.add(lvl2);
+    this.add(lvl3);
+    this.add(menuBtn);
+  }
+  
+  private JButton buttonCreator(String text) {
+    JButton button = new JButton(text);
+    btnCount++;
+    button.setFont(buttonFont);
+    button.setForeground(Color.white);
+    button.setFocusPainted(false);
+    button.setMargin(new Insets(0, 0, 0, 0));
+    button.setContentAreaFilled(false);
+    button.setOpaque(false);
+    layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, button, 0, SpringLayout.HORIZONTAL_CENTER, this);
+    layout.putConstraint(SpringLayout.NORTH, button, btnCount * 140, SpringLayout.NORTH, game.frame);
+    button.addActionListener(this);
+    return button;
+  }
+  
+  /**
+   * @param e
+   */
+  public void actionPerformed(ActionEvent e) {
+    game.fullGame = false;
+    if (e.getSource() == lvl1) {
+      game.instructions(0);
+    } else if (e.getSource() == lvl2) {
+      game.instructions(1);
+    } else if (e.getSource() == lvl3) {
+      game.instructions(2);
+    } else if (e.getSource() == menuBtn) {
+      game.mainMenu();
+    }
+    
   }
 }
