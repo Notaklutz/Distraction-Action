@@ -34,7 +34,7 @@ public class MatchingGame extends TextOnly implements ActionListener
    * These Strings will be used to check whether or not two cards match.
    */ 
   private String[] imageIdentifier = new String[] {"Water", "Water", "Music", "Music", 
-    "Hourglass", "Hourglass", "Headphones", "Headphones", "Water", "Water", "Water", "Water"};
+    "Hourglass", "Hourglass", "Headphones", "Headphones", "NoPhones", "NoPhones", "TextMessage", "SocialMedia"};
   /**
    * This JButton will be used to store the first card that the player selected.
    */ 
@@ -72,6 +72,10 @@ public class MatchingGame extends TextOnly implements ActionListener
    * This JButton stores the back of the first card selected by the user.
    */ 
   private JButton firstBackCard;
+  /**
+   * This JButton stores the back of the second card selected by the user.
+   */ 
+  private JButton secondBackCard;
   /**
    * This MatchingGame variable stores the current MatchingGame object. It is
    * used to access methods of the MatchingGame class in inner classes.
@@ -120,10 +124,10 @@ public class MatchingGame extends TextOnly implements ActionListener
     images[5] = new ImageIcon("Hourglass.png");
     images[6] = new ImageIcon("Headphones.png");
     images[7] = new ImageIcon("Headphones.png");
-    images[8] = new ImageIcon("Water.png");
-    images[9] = new ImageIcon("Water.png");
-    images[10] = new ImageIcon("Water.png");
-    images[11] = new ImageIcon("Water.png");
+    images[8] = new ImageIcon("NoPhones.png");
+    images[9] = new ImageIcon("NoPhones.png");
+    images[10] = new ImageIcon("TextMessage.png");
+    images[11] = new ImageIcon("SocialMedia.png");
     
     matches = new JLabel("Matches: " + numMatches);
     strikes = new JLabel("Strikes: " + numStrikes);
@@ -199,10 +203,11 @@ public class MatchingGame extends TextOnly implements ActionListener
    */ 
   private void printResults() 
   {
-    for (int x = 0; x < backCards.length; x++)
+    // Screen erase
+    for (int a = 0; a < backCards.length; a++)
     {
-      backCards[x].setVisible(false);
-      faceCards[x].setVisible(false);
+      backCards[a].setVisible(false);
+      faceCards[a].setVisible(false);
     }
     
     matches.setVisible(false);
@@ -216,10 +221,13 @@ public class MatchingGame extends TextOnly implements ActionListener
     }
     else
     {
-      result = new JLabel("You got 3 strikes! Try again to pass and move on.");
+      result = new JLabel("You got 3 strikes! Try again!");
     }
     
-    result.setFont(smallTitle);
+    if (numStrikes >= 3)
+      result.setFont(choiceFont);
+    else
+      result.setFont(buttonFont);
     result.setForeground(Color.WHITE);
     layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, result, 0, SpringLayout.HORIZONTAL_CENTER, this);
     layout.putConstraint(SpringLayout.NORTH, result, 250, SpringLayout.NORTH, game.frame);
@@ -298,10 +306,10 @@ public class MatchingGame extends TextOnly implements ActionListener
   
   /**
    * This method will increment numStrikes by one and update the panel to reflect the current number of strikes.
-   * It will also set the current card variables to null.
+   * It will also hide the distraction cards and set the current card variables to null.
    */
   public void strike()
-  {
+  {       
     numStrikes++; 
     
     remove(strikes);
@@ -315,10 +323,64 @@ public class MatchingGame extends TextOnly implements ActionListener
     
     add(strikes);
     
-    revalidate();
-    
-    currentCard1 = null;
-    currentCard2 = null;
+    new Thread() 
+    {
+      public void run() 
+      {
+        try 
+        {
+          this.sleep(750);
+        } 
+        catch (InterruptedException e) 
+        {
+        }
+        firstBackCard.setVisible(true);
+        secondBackCard.setVisible(true);
+        try
+        {
+          currentCard1.setVisible(false);
+          currentCard2.setVisible(false);
+        }
+        catch (NullPointerException e)
+        {
+        }
+        
+        matchGame.revalidate();
+        
+        currentCard1 = null;
+        currentCard2 = null;
+      }
+    }.start();
+  }
+  
+  /**
+   * This method will add action listeners to all the JButtons in backCards.
+   */
+  private void actionListenerAdder()
+  {
+    for (JButton j : backCards)
+      j.addActionListener(this);
+  }
+  
+  /**
+   * This method will remove action listeners from all the JButtons in backCards.
+   */
+  private void actionListenerRemover()
+  {
+    for (JButton j : backCards)
+      j.removeActionListener(this);
+  }
+  
+  /**
+   * This method will determine whether or not an end condition of the game has been met.
+   * 
+   * @return Whether or not an end condition of the game has been met.
+   */
+  private boolean end()
+  {
+    if (numStrikes >= 3 || numMatches >= 5)
+      return true;
+    return false;
   }
   
   /**
@@ -336,7 +398,9 @@ public class MatchingGame extends TextOnly implements ActionListener
    * @param e The ActionEvent that was triggered by a button press.
    */
   public void actionPerformed(ActionEvent e)
-  {  
+  {      
+    actionListenerRemover(); // Prevents cards from being selected
+    
     if (e.getSource() == tryAgain)
     {
       game.matchingGame(); 
@@ -355,7 +419,7 @@ public class MatchingGame extends TextOnly implements ActionListener
     
     while (stop == false && x != 12) // while loop to check each button in backCards to determine where the ActionEvent came from
     {  
-      if (currentCard1 == null && e.getSource() == backCards[x])
+      if (currentCard1 == null && e.getSource() == backCards[x]) // checks for empty first card
       { 
         currentCard1 = faceCards[x];
         firstBackCard = backCards[x];
@@ -365,24 +429,29 @@ public class MatchingGame extends TextOnly implements ActionListener
         revalidate();
         stop = true;
         
-        if (currentCard1.getText().equals("Bad"))
-        {
+        if (imageIdentifier[x].equals("TextMessage") || imageIdentifier[x].equals("SocialMedia")) // Check for distraction
+        {          
           strike();
+          if (numStrikes == 3)
+            break;
         }
       }
-      else if (currentCard1 != null && currentCard2 == null && e.getSource() == backCards[x])
+      else if (currentCard1 != null && currentCard2 == null && e.getSource() == backCards[x]) // checks for empty second card
       {       
         currentCard2 = faceCards[x];
-        backCards[x].setVisible(false);
+        secondBackCard = backCards[x];
+        secondBackCard.setVisible(false);
         currentCard2.setVisible(true);
         
         revalidate();
         
-        if (currentCard2.getText().equals("Bad"))
-        {
+        if (imageIdentifier[x].equals("TextMessage") || imageIdentifier[x].equals("SocialMedia")) // Check for distraction
+        {        
           strike();
+          if (numStrikes == 3) // exit while loop if strikes are 3
+            break;
         }      
-        else if (imageIdentifier[firstCardIndex].equals(imageIdentifier[x]))
+        else if (imageIdentifier[firstCardIndex].equals(imageIdentifier[x])) // Check for match
         {
           numMatches++; 
           
@@ -403,10 +472,8 @@ public class MatchingGame extends TextOnly implements ActionListener
           currentCard2 = null; 
         }
         else
-        {     
-          final JButton finalCard = backCards[x];
-          
-          new Thread() 
+        {             
+          new Thread() // creates 750-millisecond delay before resetting cards
           {
             public void run() 
             {
@@ -418,9 +485,15 @@ public class MatchingGame extends TextOnly implements ActionListener
               {
               }
               firstBackCard.setVisible(true);
-              finalCard.setVisible(true);
-              currentCard1.setVisible(false);
-              currentCard2.setVisible(false);
+              secondBackCard.setVisible(true);
+              try
+              {
+                currentCard1.setVisible(false);
+                currentCard2.setVisible(false);
+              }
+              catch (NullPointerException e)
+              {
+              }
               
               matchGame.revalidate();
               
@@ -433,13 +506,9 @@ public class MatchingGame extends TextOnly implements ActionListener
       x++;
     }      
     stop = false;
-    if (numStrikes == 3 || numMatches == 5) // Win condition
+    if (end()) // Checks for win condition
     {    
-      for (JButton j : backCards)
-      {
-        j.removeActionListener(this); // Prevents clicking during delay before printResults() is called
-      }
-      new Thread() 
+      new Thread() // Creates one-second delay before printing results
       {
         public void run() 
         {
@@ -453,6 +522,10 @@ public class MatchingGame extends TextOnly implements ActionListener
           matchGame.printResults();
         }
       }.start();
+    }
+    else // if end conditions have NOT been met
+    {
+      actionListenerAdder(); // Allows cards to be selected
     }
   }
 }
