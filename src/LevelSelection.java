@@ -1,56 +1,81 @@
-import java.awt.*;
 import javax.swing.*;
-import java.io.*;
-/*
-@author Kevin Nguyen
-@version 1 - May 14, 2019
-<p>
-This class will allow the user to select any one of the rooms to play.
-</p>
-*/
-public class LevelSelection extends TextOnly
-{
- /**
-  * This constructor will create a LevelSelection object. It will initialize
-  * the custom fonts and register them to the Graphics environment as well as initialize
-  * the layout of the panel. It will also call the printTitle(), printText(), and printFooter() methods.
-  */ 
-  public LevelSelection()
-  {
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/**
+ * @author Ryan Phan
+ * @version 1 14.04.19
+ *
+ * <h2>Course Info:</h2>
+ * ICS4U0 with Krasteva, V.
+ *
+ * <p>
+ *  Displays the level selection menu of the game.
+ * </p>
+ */
+public class LevelSelection extends NavigationScreen {
+  /**
+   * The various buttons of the level selection menu
+   */
+  private JButton lvl1, lvl2, lvl3, menuBtn;
+
+  /**
+   * <p>
+   * This constructor creates the menu by initializing the fonts and layout of the
+   * panel. Afterward, it prints the title, the buttons, and the footer of the panel.
+   * It also sets the background to grey and the panel visibility to true.
+   * </p>
+   *
+   * @param d The game frame
+   */
+  public LevelSelection(DistractionAction d) {
+    game = d;
     initializeFontsAndLayout();
-    ge.registerFont (bigTitle);
-    ge.registerFont (smallTitle);
-    ge.registerFont (defaultFont);
+    spacingValue = 140;
     printTitle();
     printText();
     printFooter();
+    this.setBackground(DistractionAction.GREY);
+    this.setVisible(true);
   }
-  
- /**
-  * This method will print the options that the user will have to choose from
-  * in the LevelSelection screen.
-  */ 
-  public void printText()
-  {
-   JLabel deficiencies = new JLabel ("LEVEL 1: DEFICIENCIES"); 
-   deficiencies.setFont (defaultFont);
-   deficiencies.setForeground(Color.white);
-   deficiencies.setLocation(400, 300);
-   this.add(deficiencies);
-   JLabel panic = new JLabel ("LEVEL 2: PANIC");
-   panic.setFont(defaultFont);
-   panic.setForeground(Color.white);
-   panic.setLocation(400, 400);
-   this.add(panic);
-   JLabel escape = new JLabel ("LEVEL 3: ESCAPE");
-   escape.setFont (defaultFont);
-   escape.setForeground(Color.white);
-   escape.setLocation(400, 500);
-   this.add(escape);
-   JLabel mainMenu = new JLabel ("MAIN MENU");
-   mainMenu.setFont (defaultFont);
-   mainMenu.setForeground(Color.white);
-   mainMenu.setLocation(400, 600);
-   this.add(mainMenu);
+
+  /**
+   * <p>
+   * Adds the buttons to the level selection panel.
+   * </p>
+   */
+  public void printText() {
+    lvl1 = buttonCreator("LEVEL 1: DEFICIENCIES");
+    lvl2 = buttonCreator("LEVEL 2: PANIC");
+    lvl3 = buttonCreator("LEVEL 3: ESCAPE");
+    menuBtn = buttonCreator("MAIN MENU");
+    
+    this.add(lvl1);
+    this.add(lvl2);
+    this.add(lvl3);
+    this.add(menuBtn);
+  }
+
+  /**
+   * <p>
+   * Used to perform actions when a button is pressed.
+   * </p>
+   *
+   * @param e The ActionEvent to be processed
+   *
+   */
+  public void actionPerformed(ActionEvent e) {
+    game.fullGame = false;
+    if (e.getSource() == lvl1) {
+      game.instructions(0);
+    } else if (e.getSource() == lvl2) {
+      game.instructions(1);
+    } else if (e.getSource() == lvl3) {
+      game.instructions(2);
+    } else if (e.getSource() == menuBtn) {
+      game.mainMenu();
+    }
+    
   }
 }
