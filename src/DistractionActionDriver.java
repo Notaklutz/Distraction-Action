@@ -18,6 +18,7 @@ public class DistractionActionDriver {
      */
     public static void main(String[] args) {
         //new SplashScreen();
+        /*
         frame = new JFrame("Distraction Action");
         frame.setSize(1000, 800);
         frame.setDefaultCloseOperation(frame.DISPOSE_ON_CLOSE);
@@ -26,5 +27,6 @@ public class DistractionActionDriver {
         frame.setContentPane(m);
         frame.revalidate();
         frame.setVisible(true);
+         */
     }
 }
