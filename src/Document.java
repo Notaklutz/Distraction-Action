@@ -3,7 +3,23 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+/**
+ * @author Ryan Phan
+ * @version ??? - June 6, 2019
+ * 
+ * <h2>Course Info:</h2>
+ * ICS4U0 with Krasteva, V.
+ * 
+ * <p>
+ * Collectable in Level Three. Collect 10 to win. 
+ * MORE TO BE ADDED
+ * </p>
+ */
 
+/**
+ * Change Log
+ * June 4, 2019 - Created Document
+ */ 
 public class Document extends GameObject {
     Handler handler;
     private BufferedImage img;

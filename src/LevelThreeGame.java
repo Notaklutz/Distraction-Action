@@ -2,18 +2,32 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
-/*
+/**
  * @author Ryan Phan
- * @version 1 - May 14, 2019
- *
+ * @version ??? - June 6, 2019
+ * 
  * <h2>Course Info:</h2>
  * ICS4U0 with Krasteva, V.
- *
+ * 
  * <p>
- * This abstract class will be the parent class of any classes that are mostly text-based,
- * with a method to print the title and an abstract method to print text. It extends JPanel.
+ * This class serves as the main class for Level Three.
+ * MORE TO BE ADDED
  * </p>
  */
+
+/**
+ * Change Log
+ * June 1, 2019 - Created LevelThreeGame [MORE TO BE ADDED]
+ * June 2, 2019 - Added clamp() method to keep the GameObjects from leaving the frame and to keep
+ *                the health bar (focus bar) confined into one rectangle.
+ * June 4, 2019 - Added a Spawner object to LevelThreeGame to control spawn rate of distractions,
+ *                boosts, and documents.
+ * June 6, 2019 - Revamped LevelThreeGame to work with the rest of the game. Initally, LevelThreeGame
+ *                extended Canvas, causing several issues when adding it to our game, as our game
+ *                uses JPanels to display different screens. The render() method was rendered
+ *                useless as it cannot render to a JPanel. Thus, render() has been replaced by
+ *                paintComponent() and LevelThreeGame now extends JPanel.
+ */ 
 public class LevelThreeGame extends JPanel implements Runnable {
 
     private boolean running = false;

@@ -2,7 +2,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+/**
+ * @author Ryan Phan
+ * @version ??? - June 6, 2019
+ * 
+ * <h2>Course Info:</h2>
+ * ICS4U0 with Krasteva, V.
+ * 
+ * <p>
+ * Displays the results to level three
+ * MORE TO BE ADDED
+ * </p>
+ */
 
+/**
+ * Change Log
+ * June 5, 2019 - Created LevelThreeResults
+ */ 
 public class LevelThreeResults extends TextOnly implements ActionListener {
     JButton tryAgain;
     JButton nextLevelOrLevelSelection;

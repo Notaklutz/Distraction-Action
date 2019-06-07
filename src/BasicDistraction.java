@@ -5,7 +5,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+/**
+ * @author Ryan Phan
+ * @version ??? - June 6, 2019
+ * 
+ * <h2>Course Info:</h2>
+ * ICS4U0 with Krasteva, V.
+ * 
+ * <p>
+ * Creates the blueprints for a distraction, which takes the form of several random 
+ * distractions and dimisihes the user's focus bar.
+ * MORE TO BE ADDED
+ * </p>
+ */
 
+/**
+ * Change Log
+ * June 2, 2019 - Created BasicDistraction
+ */ 
 public class BasicDistraction extends GameObject {
     Handler handler;
     Random r = new Random();

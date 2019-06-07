@@ -4,7 +4,24 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+/**
+ * @author Ryan Phan
+ * @version ??? - June 6, 2019
+ * 
+ * <h2>Course Info:</h2>
+ * ICS4U0 with Krasteva, V.
+ * 
+ * <p>
+ * Creates the blueprints for a focus boost, which takes the form of a water bottle and 
+ * regenerates the user's health.
+ * MORE TO BE ADDED
+ * </p>
+ */
 
+/**
+ * Change Log
+ * June 4, 2019 - Created FocusBoost
+ */ 
 public class FocusBoost extends GameObject {
     Handler handler;
     private BufferedImage img;
