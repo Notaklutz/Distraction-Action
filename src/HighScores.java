@@ -1,76 +1,251 @@
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
-/*
- @author Kevin Nguyen
- @version 1 - May 14, 2019
- <p>
- This class will thank the user for playing the game.
- </p>
+/**
+ * @author Kevin Nguyen
+ * @version 3 - June 2, 2019
+ * 
+ * <h2>Course Info:</h2>
+ * ICS4U0 with Krasteva, V.
+ * 
+ * <p>
+ * This class will display the 5 highest high scores to the user and give them the 
+ * option to clear the data or return to the menu. It extends Screen and implements ActionListener.
+ * <br>
+ * Time Spent: 2 hours
+ * </p>
  */
-public class HighScores extends TextOnly
-{
+
+/**
+ * Change Log
+ * May 24, 2019 - Created HighScores class, overrided printText(), and added necessary instance variables.
+ * May 25, 2019 - Adapted methods of Ryan's high scores from last semester to work with our game. Changed
+ *                constructor to accept an instance of the driver class as a parameter.
+ * June 2, 2019 - Changed printText() to printHighScores(). Updated encapsulation of methods.
+ * June 4, 2019 - Scores will now be displayed with a percentage symbol, resembling a mark.
+ */ 
+public class HighScores extends Screen implements ActionListener
+{ 
   /**
-   * This constructor will create a HighScores object. It will initialize the custom fonts 
+   * The header that will appear at the top of the high scores file.
+   */   
+  private String header = "Distraction Action High Scores";
+  /**
+   * The high scores file.
+   */     
+  private File highScoresFile = new File(System.getProperty("user.home") + "/Desktop", "HighScores.txt");
+  /**
+   * The JButton that will clear the data from the high scores file.
+   */   
+  private JButton clearData;
+  /**
+   * The JButton that will switch back to the menu screen.
+   */   
+  private JButton backToMenu;
+  /**
+   * The size of the leaderboard.
+   */   
+  private final int LEADERBOARD_SIZE = 5;
+  /**
+   * The array that stores all of the names on the leaderboard.
+   */ 
+  private String[] allNames = new String[5];
+  /**
+   * The array that stores all of the scores on the leaderboard.
+   */ 
+  private int[] allScores = new int[5];
+  /**
+   * The array that stores all of the JLabels displaying the names on the leaderboard.
+   */ 
+  private JLabel[] names = new JLabel[5];
+  /**
+   * The array that stores all of the JLabels displaying the scores on the leaderboard.
+   */ 
+  private JLabel[] scores = new JLabel[5];
+  
+  /**
+   * This constructor will create a HighScores object and assign the passed in parameter to game. It will initialize the custom fonts 
    * and register them to the Graphics environment as well as initialize the layout of the panel.
    * It will also call the printTitle() method, the printText() method, and the printFooter() method.
+   * 
+   * @param d The DistractionAction object that will contain the frame that high scores will be displayed on.
    */   
-  public HighScores()
+  public HighScores(DistractionAction d)
   {
+    game = d;
     initializeFontsAndLayout();
-    ge.registerFont (bigTitle);
-    ge.registerFont (smallTitle);
-    ge.registerFont (defaultFont);
-    printTitle();
-    printText();
-    printFooter();
-    this.setBackground(grey);
-    this.setVisible(true);
+    printTitle(); 
+    getHighScores();
+    printHighScores(); 
+    setBackground(DistractionAction.GREY);
+    setVisible(true);
   }
   
   /**
-   * This method will print a goodbye message to the user.
+   * This method will print the empty high scores table and data clear options to the user. It will also attempt to
+   * print the actual high scores table if possible.
+   * <p>
+   * <pre>
+   * Variable Name            Variable Type        Description
+   * highScores               JLabel               The JLabel that will display "HIGH SCORES".
+   * rank                     JLabel               The JLabel that will display "RANK".
+   * name                     JLabel               The JLabel that will display "NAME".
+   * score                    JLabel               The JLabel that will display "SCORE".
+   * one                      JLabel               The JLabel that will display "1.".
+   * two                      JLabel               The JLabel that will display "2.".
+   * three                    JLabel               The JLabel that will display "3.".
+   * four                     JLabel               The JLabel that will display "4.".
+   * five                     JLabel               The JLabel that will display "5.".
+   * </pre>
+   * </p>
    */   
-  public void printText()
+  private void printHighScores()
   {
-    JLabel goodbye = new JLabel ("GOODBYE!", JLabel.CENTER); 
-    goodbye.setFont (defaultFont);
-    goodbye.setForeground(Color.white);
-    layout.putConstraint(SpringLayout.WEST, goodbye, 400, SpringLayout.WEST, DistractionAction.frame);
-    layout.putConstraint(SpringLayout.NORTH, goodbye, 70, SpringLayout.NORTH, DistractionAction.frame);
-    this.add(goodbye);
-    JLabel thank = new JLabel ("THANK YOU FOR PLAYING", JLabel.CENTER);
-    thank.setFont (defaultFont);
-    thank.setForeground(Color.white);
-    layout.putConstraint(SpringLayout.WEST, thank, 250, SpringLayout.WEST, DistractionAction.frame);
-    layout.putConstraint(SpringLayout.NORTH, thank, 100, SpringLayout.SOUTH, goodbye);
-    this.add(thank);
-    JLabel learned = new JLabel ("WE HOPE YOU LEARNED SOMETHING", JLabel.CENTER);
-    learned.setFont (defaultFont);
-    learned.setForeground(Color.white);
-    layout.putConstraint(SpringLayout.WEST, learned, 200, SpringLayout.WEST, DistractionAction.frame);
-    layout.putConstraint(SpringLayout.NORTH, learned, 50, SpringLayout.SOUTH, thank);
-    this.add(learned);
-    JLabel play = new JLabel ("PLAY AGAIN ANYTIME!", JLabel.CENTER);
-    play.setFont (defaultFont);
-    play.setForeground(Color.white);
-    layout.putConstraint(SpringLayout.WEST, play, 280, SpringLayout.WEST, DistractionAction.frame);
-    layout.putConstraint(SpringLayout.NORTH, play, 50, SpringLayout.SOUTH, learned);
-    this.add(play);
+    JLabel highScores = new JLabel ("HIGH SCORES", JLabel.CENTER); 
+    highScores.setFont (highScoresAndGoodbyeFont);
+    highScores.setForeground(Color.white);
+    layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, highScores, 0, SpringLayout.HORIZONTAL_CENTER, this);
+    layout.putConstraint(SpringLayout.NORTH, highScores, 100, SpringLayout.NORTH, game.frame);
+    this.add(highScores);
+    
+    JLabel rank = new JLabel ("RANK", JLabel.CENTER);
+    rank.setFont (highScoresAndGoodbyeFont);
+    rank.setForeground(Color.white);
+    layout.putConstraint(SpringLayout.WEST, rank, 60, SpringLayout.WEST, game.frame);
+    layout.putConstraint(SpringLayout.NORTH, rank, 30, SpringLayout.SOUTH, highScores);
+    this.add(rank);
+    
+    JLabel name = new JLabel ("NAME", JLabel.CENTER);
+    name.setFont (highScoresAndGoodbyeFont);
+    name.setForeground(Color.white);
+    layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, name, 0, SpringLayout.HORIZONTAL_CENTER, this);
+    layout.putConstraint(SpringLayout.NORTH, name, 30, SpringLayout.SOUTH, highScores);
+    this.add(name);
+    
+    JLabel score = new JLabel ("SCORE", JLabel.CENTER);
+    score.setFont (highScoresAndGoodbyeFont);
+    score.setForeground(Color.white);
+    layout.putConstraint(SpringLayout.WEST, score, 220, SpringLayout.EAST, name);
+    layout.putConstraint(SpringLayout.NORTH, score, 30, SpringLayout.SOUTH, highScores);
+    this.add(score);
+    
+    JLabel one = new JLabel ("1.", JLabel.CENTER);
+    one.setFont (highScoresAndGoodbyeFont);
+    one.setForeground(Color.white);
+    layout.putConstraint(SpringLayout.WEST, one, 70, SpringLayout.WEST, game.frame);
+    layout.putConstraint(SpringLayout.NORTH, one, 20, SpringLayout.SOUTH, rank);
+    this.add(one);
+    
+    JLabel two = new JLabel ("2.", JLabel.CENTER);
+    two.setFont (highScoresAndGoodbyeFont);
+    two.setForeground(Color.white);
+    layout.putConstraint(SpringLayout.WEST, two, 70, SpringLayout.WEST, game.frame);
+    layout.putConstraint(SpringLayout.NORTH, two, 20, SpringLayout.SOUTH, one);
+    this.add(two);
+    
+    JLabel three = new JLabel ("3.", JLabel.CENTER);
+    three.setFont (highScoresAndGoodbyeFont);
+    three.setForeground(Color.white);
+    layout.putConstraint(SpringLayout.WEST, three, 70, SpringLayout.WEST, game.frame);
+    layout.putConstraint(SpringLayout.NORTH, three, 20, SpringLayout.SOUTH, two);
+    this.add(three);
+    
+    JLabel four = new JLabel ("4.", JLabel.CENTER);
+    four.setFont (highScoresAndGoodbyeFont);
+    four.setForeground(Color.white);
+    layout.putConstraint(SpringLayout.WEST, four, 70, SpringLayout.WEST, game.frame);
+    layout.putConstraint(SpringLayout.NORTH, four, 20, SpringLayout.SOUTH, three);
+    this.add(four);
+    
+    JLabel five = new JLabel ("5.", JLabel.CENTER);
+    five.setFont (highScoresAndGoodbyeFont);
+    five.setForeground(Color.white);
+    layout.putConstraint(SpringLayout.WEST, five, 70, SpringLayout.WEST, game.frame);
+    layout.putConstraint(SpringLayout.NORTH, five, 20, SpringLayout.SOUTH, four);
+    this.add(five);
+    
+    clearData = centredButtonCreator("CLEAR SCORES", 580);
+    backToMenu = centredButtonCreator("RETURN TO MENU", 650);
+    this.add(clearData);
+    this.add(backToMenu);
+    
+    // Printing the high scores
+    for (int x = 0; x < 5; x++)
+    {
+      if (allNames[x] != null)
+      {
+        names[x] = new JLabel (allNames[x], JLabel.CENTER); 
+        names[x].setFont (highScoresAndGoodbyeFont);
+        names[x].setForeground(Color.white);
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, names[x], 0, SpringLayout.HORIZONTAL_CENTER, name);
+        layout.putConstraint(SpringLayout.NORTH, names[x], x * 55 + 20, SpringLayout.SOUTH, name);
+        this.add(names[x]);
+        
+        scores[x] = new JLabel (Integer.toString(allScores[x]) + "%", JLabel.CENTER); 
+        scores[x].setFont (highScoresAndGoodbyeFont);
+        scores[x].setForeground(Color.white);
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scores[x], 0, SpringLayout.HORIZONTAL_CENTER, score);
+        layout.putConstraint(SpringLayout.NORTH, scores[x], x * 55 + 20, SpringLayout.SOUTH, score);
+        this.add(scores[x]);
+      }
+    }
   }
   
-  /*   This method is used to create a new save file in the event that there isn't one or the header is incorrect.
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   Local Variables: output - PrintWriter - Used to output the header and make a new file.
-   *   Global Variables Used: None
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   No input/logic/loop is used.
+  /**
+   * This method will return a centred JButton with a specified text and vertical position.
+   * 
+   * @param text The text that the button will display.
+   * @param yPos The yPos/vertical height of the button.
+   * @return A centred JButton with the specified text and vertical position.
    */
-  private void createNewSaveFile ()
+  private JButton centredButtonCreator(String text, int yPos) 
+  {
+    JButton button = new JButton(text);
+    button.setFont(buttonFont);
+    button.setForeground(Color.white);
+    button.setFocusPainted(false);
+    button.setMargin(new Insets(0, 0, 0, 0));
+    button.setContentAreaFilled(false);
+    button.setOpaque(false);
+    layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, button, 0, SpringLayout.HORIZONTAL_CENTER, this);
+    layout.putConstraint(SpringLayout.NORTH, button, yPos, SpringLayout.NORTH, game.frame);
+    button.addActionListener(this);
+    return button;
+  }
+  
+  /**
+   * This method will either clear the data in high scores or return to main menu, depending on what button the player pressed.
+   * 
+   * @param e The ActionEvent that was triggered by the player's button press.
+   */
+  public void actionPerformed(ActionEvent e) 
+  {
+    if (e.getSource() == clearData) 
+    {
+      clearHighScores();
+    }
+    else if (e.getSource() == backToMenu) 
+    {
+      game.mainMenu();
+    } 
+  }
+  
+  /**
+   * This method is used to create a new high scores file in the event that there isn't one or the header is incorrect.
+   * It will also be invoked when the user chooses to clear the high scores.
+   * <p>
+   * <pre>
+   * Variable Name            Variable Type        Description
+   * output                   PrintWriter          The PrintWriter that will create the file that will store the high scores and print the header to it.
+   * </pre>
+   * </p>
+   */
+  private void createNewHighScoresFile ()
   {
     try
     {
-      PrintWriter output = new PrintWriter (new FileWriter (HIGHSCORES_FILE));
+      PrintWriter output = new PrintWriter (new FileWriter (highScoresFile));
       output.println (header);
       output.close ();
     }
@@ -80,59 +255,57 @@ public class HighScores extends TextOnly
   }
   
   
-  /*   This method is used to either create a new save file using createNewSaveFile(), or it adds the match results to
-   *   a file.
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   Local Variables:
-   *   input - BufferedReader - Used to check for a header.
-   *   output - PrintWriter - Used to output the results into the file.
-   *   Global Variables Used: None
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   A while loop is used to ensure that a new file is create if anything goes wrong.
+  /**   
+   * This method is used to either create a new high scores file using createNewHighScoresFile() (in the event that there is no 
+   * high scores file or the header is incorrect) or add the player's score to the file.
+   * <p>
+   * <pre>
+   * Variable Name            Variable Type        Description
+   * input                    BufferedReader       The BufferedReader that will read the header of the file.
+   * output                   PrintWriter          The PrintWriter that will print the player's name and score to the file.
+   * </pre>
+   * </p>
+   * 
+   * @param name The player's name.
+   * @param score The player's score.
    */
-  private void writeHighScores (String winnerName, int numOfMoves, String loserName)
+  public void writeHighScores (String name, int score)
   {
     while (true)
     {
       try
       {
-        BufferedReader input = new BufferedReader (new FileReader (HIGHSCORES_FILE));
+        BufferedReader input = new BufferedReader (new FileReader (highScoresFile));
         if (!(input.readLine ().equals (header)))
         {
-          createNewSaveFile ();
-          new Message ("Invalid save file! New file created.", "Error!");
+          createNewHighScoresFile ();
         }
-        PrintWriter output = new PrintWriter (new FileWriter (HIGHSCORES_FILE, true));
-        output.println (winnerName + " v. " + loserName);
-        output.println (winnerName);
-        output.println (numOfMoves);
+        PrintWriter output = new PrintWriter (new FileWriter (highScoresFile, true));
+        output.println (name);
+        output.println (score);
         output.close ();
         break;
       }
       catch (IOException e)
       {
-        createNewSaveFile ();
+        createNewHighScoresFile ();
         continue;
       }
     }
   }
-  
-  
-  /*   This method retrieves the high scores from the save file and stores it in some arrays. The array is then sorted
-   *   with sortHighScores()
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   Local Variables:
-   *   numOfScores - int - Used to store the number of scores inside the file.
-   *   line - String - Used to check how many scores are in the file.
-   *   input - BufferedReader - Reads content from the file.
-   *
-   *   Global Variables Used:
-   *   totalMoves          |   int[]                       Stores the number of moves for the leaderboard (Stores all moves).
-   *   totalNames          |   String[]                    Stores the winners for the leaderboard (Stores all names).
-   *   totalMatchups       |   String[]                    Stores the matchups for the leaderboard (Stores all matches).
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   A while loop is used to ensure that the program will continue without issues if a problem arises.
-   *   Another while loop is finds how many lines are in the file
+   
+   
+  /**   
+   * This method retrieves the names and scores from the high scores file and stores it in some arrays. The array is
+   * then sorted by invoking sortHighScores().
+   * <p>
+   * <pre>
+   * Variable Name            Variable Type        Description
+   * numOfScores              int                  The number of scores in the file.
+   * line                     String               The String that will be used to store the scores in the file.
+   * input                    BufferedReader       The BufferedReader that will be used to read the file.
+   * </pre>
+   * </p>
    */
   private void getHighScores ()
   { 
@@ -144,18 +317,16 @@ public class HighScores extends TextOnly
     {
       try
       {
-        input = new BufferedReader (new FileReader (HIGHSCORES_FILE));
+        input = new BufferedReader (new FileReader (highScoresFile));
         if (!(input.readLine ().equals (header)))
         {
-          createNewSaveFile ();
-          new Message ("Invalid save file! New file created.", "Error!");
+          createNewHighScoresFile ();
           continue;
         }
         else
         {
-          while (line != null)            // Finds how many lines are in the file
+          while (line != null) // Finds how many lines are in the file
           {
-            input.readLine ();
             input.readLine ();
             line = input.readLine ();
             numOfScores++;                     
@@ -166,94 +337,81 @@ public class HighScores extends TextOnly
       }
       catch (IOException e)
       {
-        createNewSaveFile ();
-        new Message ("File doesn't exist! New file created.", "Error!");
+        createNewHighScoresFile ();
       }
     }
-    
     try
     {
-      input = new BufferedReader (new FileReader (HIGHSCORES_FILE));
-      totalMoves = new int [LEADERBOARD_SIZE + numOfScores];
-      totalNames = new String [LEADERBOARD_SIZE + numOfScores];
-      totalMatchups = new String [LEADERBOARD_SIZE + numOfScores];
+      input = new BufferedReader (new FileReader (highScoresFile));
+      allScores = new int [LEADERBOARD_SIZE + numOfScores];
+      allNames = new String [LEADERBOARD_SIZE + numOfScores];
       input.readLine ();
       
       for (int i = 0 ; i < numOfScores ; i++)
       {
-        totalMatchups [i] = input.readLine ();
-        totalNames [i] = input.readLine ();
+        allNames [i] = input.readLine ();
         line = input.readLine ();
-        totalMoves [i] = Integer.parseInt (line);
+        allScores [i] = Integer.parseInt (line);
       }
       input.close ();
     }
-    catch (Exception e)                                                 // General Exception in case something in the file is invalid. 
+    catch (Exception e) // General Exception in case something in the file is invalid. 
     {
-      createNewSaveFile ();
-      new Message ("Invalid File Input! New file created.", "Error!");
+      createNewHighScoresFile ();
     }
     sortHighScores (numOfScores);
   }
-  
-  
-  /*   This method is used to sort the high scores inside the file and then the top 10 elements are placed into new
-   *   arrays.
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   Local Variables:
-   *   numOfScores - Parameter Passed int - Used to store the number of scores inside the file.
-   *   movedScore, movedName, movedMatch - int, String, String - Stores the element in the array to be moved.
-   *
-   *   Global Variables Used:
-   *   totalMoves          |   int[]                       Stores the number of moves for the leaderboard (Stores all moves).
-   *   totalNames          |   String[]                    Stores the winners for the leaderboard (Stores all names).
-   *   totalMatchups       |   String[]                    Stores the matchups for the leaderboard (Stores all matches).
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   Two for loops are used to ensure that every element in the array is checked.
+   
+   
+  /**
+   * This method is used to sort the high scores.
+   * <p>
+   * <pre>
+   * Variable Name            Variable Type        Description
+   * movedScore               int                  An int used to temporarily store a score. It is used to sort the scores.
+   * movedName                String               A String used to temporarily store a name. It is used to sort the names.
+   * </pre>
+   * </p>
+   * 
+   * @param numOfScores The number of scores to be sorted.
    */
   private void sortHighScores (int numOfScores)
   {
-    for (int i = 0 ; i < numOfScores ; i++)
+    int unsortedInt;
+    String temp;
+    
+    for (int x = 1; x < numOfScores; x++) 
     {
-      for (int j = i + 1 ; j < numOfScores ; j++)
+      // Sets unsortedInt, temp, and the index of the sorted int that unsortedInt is being compared to.
+      unsortedInt = allScores[x];
+      temp = allNames[x];
+      int sortedIntIndex = x - 1;
+      
+      /*
+       * Checks if the sorted int index is pointing at a valid index and checks if the element in the index is greater than the unsorted element.
+       * If both conditions are satisfied, the sorted int will be copied one element up in the array and the sortedIntIndex will point one index down.
+       * The same will happen to allNames.
+       */
+      while (sortedIntIndex >= 0 && allScores [sortedIntIndex] <= unsortedInt) 
       {
-        int movedScore = 0;
-        String movedName = "";
-        String movedMatch = "";
-        if (totalMoves [i] > totalMoves [j])    // If element is greater than one after it. 
-        {
-          movedScore = totalMoves [i];        // Store temporary variable
-          totalMoves [i] = totalMoves [j];    // Switch the elements
-          totalMoves [j] = movedScore;        // i to j and j to i
-          
-          movedName = totalNames [i];
-          totalNames [i] = totalNames [j];
-          totalNames [j] = movedName;
-          
-          movedMatch = totalMatchups [i];
-          totalMatchups [i] = totalMatchups [j];
-          totalMatchups [j] = movedMatch;
-        }
+        allScores [sortedIntIndex + 1] = allScores [sortedIntIndex];
+        allNames [sortedIntIndex + 1] = allNames [sortedIntIndex];
+        sortedIntIndex--;
       }
+      // Places the unsortedInt into the index above the sorted int index. This will occur either when the sorted int index is pointing at -1 
+      // or at an int that is less than the unsorted int. The same will happen to allNames.
+      allScores [sortedIntIndex + 1] = unsortedInt;
+      allNames [sortedIntIndex + 1] = temp;
     }
   }
-  
-  
-  /*   This method allows the user to clear the high scores file and the leaderboard.
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   Local Variables:
-   *   clear - char - Used to check if the user wants to clear the file or not.
-   *   Global Variables Used: None
-   *   ----------------------------------------------------------------------------------------------------------------
-   *   No input/logic/loop is used.
+   
+   
+  /**   
+   * This method calls createNewHighScoresFile() to erase the old file and game.highScores() to refresh the frame.
    */
-  private boolean clearHighScores (char clear)
+  private void clearHighScores ()
   {
-    if (clear == 'c' || clear == 'C')
-    {
-      createNewSaveFile ();
-      return false;
-    }
-    return true;
-  } 
+    createNewHighScoresFile ();
+    game.highScores();
+  }
 }
