@@ -13,7 +13,7 @@ import java.io.*;
  * This class will display the 5 highest high scores to the user and give them the 
  * option to clear the data or return to the menu. It extends Screen and implements ActionListener.
  * <br>
- * Time Spent: 2 hours
+ * Time Spent: 2 hours and 30 minutes
  * </p>
  */
 
@@ -97,6 +97,8 @@ public class HighScores extends Screen implements ActionListener
    * three                    JLabel               The JLabel that will display "3.".
    * four                     JLabel               The JLabel that will display "4.".
    * five                     JLabel               The JLabel that will display "5.".
+   * blankName                JLabel               The JLabel that will display "---" if there are not enough names to fill the table.     
+   * blankScore               JLabel               The JLabel that will display "---" if there are not enough scores to fill the table.    
    * </pre>
    * </p>
    */   
@@ -188,6 +190,22 @@ public class HighScores extends Screen implements ActionListener
         layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, scores[x], 0, SpringLayout.HORIZONTAL_CENTER, score);
         layout.putConstraint(SpringLayout.NORTH, scores[x], x * 55 + 20, SpringLayout.SOUTH, score);
         this.add(scores[x]);
+      }
+      else
+      {
+        JLabel blankName = new JLabel ("---", JLabel.CENTER); 
+        blankName.setFont (highScoresAndGoodbyeFont);
+        blankName.setForeground(Color.white);
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, blankName, 0, SpringLayout.HORIZONTAL_CENTER, name);
+        layout.putConstraint(SpringLayout.NORTH, blankName, x * 55 + 20, SpringLayout.SOUTH, name);
+        this.add(blankName);
+        
+        JLabel blankScore = new JLabel ("---", JLabel.CENTER); 
+        blankScore.setFont (highScoresAndGoodbyeFont);
+        blankScore.setForeground(Color.white);
+        layout.putConstraint(SpringLayout.HORIZONTAL_CENTER, blankScore, 0, SpringLayout.HORIZONTAL_CENTER, score);
+        layout.putConstraint(SpringLayout.NORTH, blankScore, x * 55 + 20, SpringLayout.SOUTH, score);
+        this.add(blankScore);
       }
     }
   }

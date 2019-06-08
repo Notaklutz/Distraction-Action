@@ -13,7 +13,7 @@ import javax.swing.*;
  * It will give the user the option to save their score to the desktop or return to the main menu.
  * This class extends GameLevel.
  * <br>
- * Time Spent: 8 hours
+ * Time Spent: 1 hour
  * </p>
  */
 
@@ -54,7 +54,10 @@ public class EndScreen extends GameLevel
    * <p>
    * <pre>
    * Variable Name            Variable Type        Description
-   * result                   JLabel               The JLabel that will display whether or not the user won.
+   * congratulations          JLabel               The JLabel that will display "Congratulations,".
+   * name                     JLabel               The JLabel that will display the player's name.
+   * finished                 JLabel               The JLabel that will display "You have finished the game.".
+   * score                    JLabel               The JLabel that will display how many documents the user managed to collect.
    * </pre>
    * </p>
    */ 
