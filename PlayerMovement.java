@@ -60,7 +60,7 @@ public class PlayerMovement {
     }
 
     /**
-     * Used to simplify code used to add player movement in level three
+     * Used to simplify code used to add KeyBindings for player movement in level three
      * @param component The component the player is within
      * @param p The player
      * @param keyCode The key to be used
