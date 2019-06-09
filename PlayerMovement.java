@@ -60,7 +60,12 @@ public class PlayerMovement {
     }
 
     /**
-     * Method used to add KeyBindings for player movement in level three
+     * Used to simplify code used to add player movement in level three
+     * @param component The component the player is within
+     * @param p The player
+     * @param keyCode The key to be used
+     * @param id Identifies the key pressed
+     * @param actionListener Action to be performed
      */
     private void addKeyBinding(JComponent component, Player p, int keyCode, String id, ActionListener actionListener){
         InputMap inputMap = component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
