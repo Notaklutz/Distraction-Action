@@ -1,30 +1,39 @@
 import javax.swing.*;
 import java.awt.*;
 
-/*
-@author Ryan Phan
-@version 1 - May 14, 2019
-<p>
-This class will display both the Kodiak Red logo and the game logo when Distraction
-Action is first opened.
-</p>
-*/
+/**
+ * @author Ryan Phan
+ * @version 1 14.04.19
+ *
+ * <h2>Course Info:</h2>
+ * ICS4U0 with Krasteva, V.
+ *
+ * <p>
+ * This class will display splash screen of the program. This includes the Kodiak Red logo
+ * and the game logo.
+ * </p>
+ */
+
+/**
+ * Change Log
+ * May 22, 2019 - Created SplashScreen
+ */ 
 public class SplashScreen extends JPanel {
 
     /**
      * JFrame used to contain the splash screen.
      */
-    JFrame frame = new JFrame();
+    private JFrame frame = new JFrame();
 
     /**
      * The company logo to be displayed.
      */
-    JLabel logo = new JLabel(new ImageIcon(getClass().getResource("\\Pictures\\SplashScreen2.png")));
+    private JLabel logo = new JLabel(new ImageIcon(getClass().getResource("\\Pictures\\SplashScreen2.png")));
 
     /**
      * The game logo to be displayed.
      */
-    JLabel logo2 = new JLabel(new ImageIcon(getClass().getResource("\\Pictures\\SplashScreen.png")));
+    private JLabel logo2 = new JLabel(new ImageIcon(getClass().getResource("\\Pictures\\SplashScreen.png")));
 
     /**
      * Height of the game frame.
@@ -34,11 +43,15 @@ public class SplashScreen extends JPanel {
     /**
      * Width of the game frame.
      */
-    private static final int windowWidth = 680;
+    private final int windowWidth = 680;
 
-    /*
-     * This constructor will create a SplashScreen object. It will call the draw() method
-     * and the the close() method.
+    /**
+     * <p>
+     * The constructor method creates a JFrame with
+     * a GridBagLayout. It calls draw() to display
+     * both of the splash screens before closing
+     * the frame.
+     * </p>
      */
     public SplashScreen() {
         super(new GridBagLayout());
@@ -46,9 +59,13 @@ public class SplashScreen extends JPanel {
         close();
     }
 
-    /*
-     * This constructor will create a SplashScreen object. It will call the draw() method
-     * and the the close() method.
+    /**
+     * <p>
+     * Description of draw()
+     * This method customizes the JFrame to ensure the splash screen looks
+     * proper. It first calls logoSplash() to display the company logo then
+     * loadingSplash(), which contains the game logo.
+     * </p>
      */
     private void draw() {
         frame.setUndecorated(true);//Turning off Title bar
@@ -61,18 +78,26 @@ public class SplashScreen extends JPanel {
         frame.revalidate();
     }
 
-    /*
-     * This constructor will create a SplashScreen object. It will call the draw() method
-     * and the the close() method.
+    /**
+     * <p>
+     * Description of logoSplash()
+     * This method adds the company logo to the JPanel and sets the panel as
+     * the current content pane of the JFrame.
+     * </p>
+     *
      */
     private void logoSplash() {
         this.add(logo);
         frame.getContentPane().add(this);
     }
 
-    /*
-     * This constructor will create a SplashScreen object. It will call the draw() method
-     * and the the close() method.
+    /**
+     * <p>
+     * Description of logoSplash()
+     * This method delays the removal of the company logo for 2500 milliseconds before
+     * adding the game logo to the content pane.
+     * </p>
+     *
      */
     private void loadingSplash() {
         sleep(2500);
@@ -82,18 +107,25 @@ public class SplashScreen extends JPanel {
         frame.getContentPane().add(this);
     }
 
-    /*
-     * This constructor will create a SplashScreen object. It will call the draw() method
-     * and the the close() method.
+    /**
+     * <p>
+     * Description of close()
+     * Delayed close of the frame.
+     * </p>
      */
     private void close() {
         sleep(2500);
         frame.dispose();
     }
 
-    /*
-     * This constructor will create a SplashScreen object. It will call the draw() method
-     * and the the close() method.
+    /**
+     * <p>
+     * Description of sleep(long delay)
+     * This method delays the current thread for delay milliseconds.
+     * </p>
+     *
+     * @param delay Used to pass in the amount of milliseconds to delay.
+     *
      */
     private void sleep(long delay) {
         try {
