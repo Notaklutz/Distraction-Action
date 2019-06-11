@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.io.*;
 /**
  * @author Kevin Nguyen
- * @version 4 - June 4, 2019
+ * @version 3 - June 2, 2019
  * 
  * <h2>Course Info:</h2>
  * ICS4U0 with Krasteva, V.
